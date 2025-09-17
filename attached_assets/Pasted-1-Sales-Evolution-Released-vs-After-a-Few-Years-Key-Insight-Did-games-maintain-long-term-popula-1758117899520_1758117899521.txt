@@ -1,0 +1,171 @@
+1. Sales Evolution: Released vs. After a Few Years
+
+Key Insight: Did games maintain long-term popularity, or did they peak at release?
+
+Metrics:
+
+Release Sales: Sales in the first year after release.
+
+Post-Release Sales: Sales after 3–5 years of release.
+
+Visualization: Create a side-by-side bar chart for each game showing release sales vs. post-release sales.
+
+Analysis:
+
+Identify which games had a strong initial impact (e.g., big launch sales) and those that experienced longevity (steady sales over the years).
+
+Highlight games that might have had late success due to factors like remasters, re-releases, or growing fanbases.
+
+2. Top-selling Games by Genre: Global Sales Performance
+
+Key Insight: Which genres dominated in global sales, and what trends can we find?
+
+Metrics:
+
+Rank games by global sales and break down by genre.
+
+Explore if certain genres (e.g., Sports, Action, RPG) have consistent popularity over the years.
+
+Visualization:
+
+Stacked bar chart showing the global sales per genre.
+
+Create a pie chart for the sales share of each genre (which genre is king?).
+
+Analysis:
+
+Identify the top-performing genres (e.g., Sports games vs. Action games) and how they evolved.
+
+Highlight if certain new genres gained traction over time.
+
+3. Platform Power: Sales by Platform
+
+Key Insight: How did different platforms contribute to game sales?
+
+Metrics:
+
+Total sales by platform (e.g., Wii, PS2, PC, etc.).
+
+Compare the regional sales distribution for each platform.
+
+Visualization:
+
+Use a bubble chart to compare sales across platforms.
+
+Create a treemap of the most popular platforms with sales size based on their total contribution.
+
+Analysis:
+
+Was there a platform domination by a single brand, like Nintendo or PlayStation?
+
+Compare early vs. later generation platform performance (e.g., PS1 vs. PS4 sales).
+
+4. Regional Sales Breakdown: North America, Europe, Japan, & Others
+
+Key Insight: How do games perform across different regions?
+
+Metrics:
+
+Regional sales for each game (North America, Europe, Japan, Other).
+
+Visualization:
+
+Geographical heatmaps to display how sales vary across the world.
+
+A stacked bar chart showing regional sales per game.
+
+Analysis:
+
+Identify which regions contributed the most to global sales.
+
+Find out if certain genres perform better in specific regions (e.g., Racing games in Japan vs. Sports games in North America).
+
+5. Sales vs. Ratings: How Do Game Ratings Influence Sales?
+
+Key Insight: Do highly rated games sell more, or is there more to the story?
+
+Metrics:
+
+Correlation between ratings and sales: Do higher-rated games have higher sales?
+
+Visualization:
+
+Scatter plot showing game ratings vs. global sales.
+
+Analysis:
+
+Highlight any anomalies, like games with low ratings but high sales (sometimes fanbase can outweigh critics).
+
+Compare critically acclaimed games with commercially successful ones to see if there's a correlation.
+
+6. In-game Purchases: Impact on Revenue
+
+Key Insight: How much revenue comes from in-game purchases compared to initial game sales?
+
+Metrics:
+
+Total in-game purchases per game.
+
+Visualization:
+
+Bar chart comparing in-game purchases vs. physical/digital sales for top games.
+
+A donut chart to show the proportion of revenue from in-game purchases for the most popular games.
+
+Analysis:
+
+Identify the top in-game purchases: Are loot boxes, expansions, or skins the big money makers?
+
+Explore how freemium games (like mobile games) generate revenue differently than full-priced games.
+
+7. Most Popular Games of All Time: Who Took the Crown?
+
+Key Insight: Which game stands out as the all-time best seller?
+
+Metrics:
+
+Rank games by total global sales.
+
+Visualization:
+
+Leaderboard-style table showing the top 10 games by global sales.
+
+Analysis:
+
+Highlight the #1 game (likely Wii Sports or Super Mario Bros.) and discuss why it achieved such massive success.
+
+Explore the impact of franchise-based games (e.g., Mario, Pokémon) on global sales.
+
+8. Timeline of Sales Growth: Game Launches & Major Milestones
+
+Key Insight: When did the big spikes in sales happen?
+
+Metrics:
+
+Sales over time from release to the current year.
+
+Visualization:
+
+Create a timeline chart for each game, marking milestones like DLC releases, re-releases, or game updates.
+
+Analysis:
+
+Find patterns in sales spikes (e.g., significant sales after a major update or price drop).
+
+Explore if game remasters or expansions led to increased sales years after the initial release.
+
+9. Fan-Favorite Games: Ratings and Community Engagement
+
+Key Insight: Which games received the best fan ratings?
+
+Metrics:
+
+Ratings and the number of reviews for each game.
+
+Visualization:
+
+Bubble chart showing ratings vs. number of reviews, where the size of the bubble represents the number of reviews.
+
+Analysis:
+
+Find out if critical acclaim correlates with community support, and explore how much user reviews impact the game's popularity.
