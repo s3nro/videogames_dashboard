@@ -10,7 +10,7 @@ from visualizations import Visualizations
 # Page configuration
 st.set_page_config(
     page_title="Video Game Sales Dashboard",
-    page_icon="🎮",
+    page_icon="logo.png",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -22,7 +22,7 @@ def load_data():
     return processor.load_and_process_data()
 
 def main():
-    st.title("🎮 Video Game Sales Analytics Dashboard")
+    st.title("Video Game Sales Analytics Dashboard")
     st.markdown("---")
     
     # Load data
@@ -31,7 +31,7 @@ def main():
         viz = Visualizations(df)
         
         # Sidebar filters
-        st.sidebar.header("🔍 Filters")
+        st.sidebar.header("Filters")
         
         # Year range filter
         year_range = st.sidebar.slider(
@@ -96,13 +96,13 @@ def main():
         
         # Main dashboard tabs
         tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
-            "📊 Overview", 
-            "🏆 Leaderboard", 
-            "🎯 Genre Analysis", 
-            "🖥️ Platform Analysis", 
-            "🌍 Regional Analysis", 
-            "📈 Trends",
-            "⚡ Sales Evolution"
+            "Overview", 
+            "Leaderboard", 
+            "Genre Analysis", 
+            "Platform Analysis", 
+            "Regional Analysis", 
+            "Trends",
+            "Sales Evolution"
         ])
         
         with tab1:
@@ -314,7 +314,7 @@ def main():
         
         # Additional insights section
         st.markdown("---")
-        st.header("📋 Key Insights")
+        st.header("Key Insights")
         
         col1, col2, col3 = st.columns(3)
         
