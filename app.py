@@ -95,13 +95,14 @@ def main():
         st.markdown("---")
         
         # Main dashboard tabs
-        tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+        tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
             "📊 Overview", 
             "🏆 Leaderboard", 
             "🎯 Genre Analysis", 
             "🖥️ Platform Analysis", 
             "🌍 Regional Analysis", 
-            "📈 Trends"
+            "📈 Trends",
+            "⚡ Sales Evolution"
         ])
         
         with tab1:
@@ -227,6 +228,89 @@ def main():
             st.subheader("Game Releases Over Time")
             fig_releases = viz.create_game_releases_timeline()
             st.plotly_chart(fig_releases, use_container_width=True)
+        
+        with tab7:
+            st.header("⚡ Sales Evolution Analysis")
+            st.write("Analyze how games performed at launch versus their long-term success patterns")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.subheader("Performance Categories Over Time")
+                fig_evolution = viz.create_sales_evolution_analysis()
+                st.plotly_chart(fig_evolution, use_container_width=True)
+            
+            with col2:
+                st.subheader("Genre Longevity vs Sales Performance")
+                fig_longevity = viz.create_launch_vs_longterm_comparison()
+                st.plotly_chart(fig_longevity, use_container_width=True)
+            
+            st.subheader("Platform Peak Performance Timeline")
+            fig_peak = viz.create_peak_performance_timeline()
+            st.plotly_chart(fig_peak, use_container_width=True)
+            
+            # Analysis insights
+            st.subheader("📋 Sales Evolution Insights")
+            
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                # Calculate pattern distribution for multi-release games
+                pattern_games = []
+                for game_name, game_group in filtered_df.groupby('Name'):
+                    if len(game_group) > 1:
+                        sorted_releases = game_group.sort_values(['Year', 'Global_Sales'], ascending=[True, False])
+                        launch_sales = sorted_releases.iloc[0]['Global_Sales']
+                        long_term_sales = sorted_releases.iloc[1:]['Global_Sales'].sum()
+                        total_sales = launch_sales + long_term_sales
+                        
+                        if total_sales > 0:
+                            long_tail_ratio = long_term_sales / total_sales
+                            if long_tail_ratio > 0.6:
+                                pattern_games.append('Long-term Success')
+                            elif long_tail_ratio > 0.3:
+                                pattern_games.append('Balanced')
+                            else:
+                                pattern_games.append('Front-loaded')
+                
+                if pattern_games:
+                    from collections import Counter
+                    pattern_counts = Counter(pattern_games)
+                    most_common = pattern_counts.most_common(1)[0]
+                    st.info(f"**Most Common Pattern**\n\n{most_common[0]} ({most_common[1]} games)")
+                else:
+                    # Fallback for single-release games
+                    median_sales = filtered_df['Global_Sales'].median()
+                    high_performers = len(filtered_df[filtered_df['Global_Sales'] > median_sales * 2])
+                    st.info(f"**High Impact Games**\n\n{high_performers} games exceed 2x median sales")
+            
+            with col2:
+                # Most consistent genre
+                genre_consistency = filtered_df.groupby('Genre')['Global_Sales'].std().reset_index()
+                genre_consistency = genre_consistency.dropna(subset=['Global_Sales'])
+                
+                if not genre_consistency.empty:
+                    min_idx = genre_consistency['Global_Sales'].idxmin()
+                    most_consistent = genre_consistency.loc[min_idx, 'Genre']
+                    st.info(f"**Most Consistent Genre**\n\n{most_consistent} shows the most consistent sales patterns")
+                else:
+                    st.info("**Most Consistent Genre**\n\nInsufficient data for analysis")
+            
+            with col3:
+                # Platform longevity leader
+                platform_longevity = filtered_df.groupby('Platform').agg({
+                    'Year': ['min', 'max'],
+                    'Global_Sales': 'sum'
+                }).reset_index()
+                platform_longevity.columns = ['Platform', 'First_Year', 'Last_Year', 'Total_Sales']
+                platform_longevity['Longevity'] = platform_longevity['Last_Year'] - platform_longevity['First_Year']
+                
+                if not platform_longevity.empty:
+                    longest_platform = platform_longevity.loc[platform_longevity['Longevity'].idxmax(), 'Platform']
+                    longest_years = platform_longevity['Longevity'].max()
+                    st.info(f"**Platform Longevity Leader**\n\n{longest_platform} with {longest_years} years active")
+                else:
+                    st.info("**Platform Longevity**\n\nNo data available")
         
         # Additional insights section
         st.markdown("---")
