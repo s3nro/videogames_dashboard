@@ -39,7 +39,8 @@ class DataProcessor:
         # Fill missing values for sales columns with 0
         sales_columns = ['NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales', 'Global_Sales']
         for col in sales_columns:
-            df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0)
+            df[col] = pd.to_numeric(df[col], errors='coerce')
+            df[col] = df[col].fillna(0)
         
         # Clean string columns
         string_columns = ['Name', 'Platform', 'Genre', 'Publisher']

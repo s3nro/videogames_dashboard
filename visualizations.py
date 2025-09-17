@@ -406,3 +406,223 @@ class Visualizations:
         )
         
         return fig
+    
+    def create_sales_evolution_analysis(self):
+        """Create analysis comparing launch vs long-term performance"""
+        # Since our dataset has single entries per game, we'll analyze patterns differently
+        # We'll look at games with multiple platform releases as proxy for launch vs long-term
+        
+        reference_year = int(self.df['Year'].max())
+        
+        # Group games by name to find multi-platform releases
+        game_analysis = []
+        
+        for game_name, game_group in self.df.groupby('Name'):
+            if len(game_group) > 1:  # Multi-platform/version releases
+                # Sort by year and sales
+                sorted_releases = game_group.sort_values(['Year', 'Global_Sales'], ascending=[True, False])
+                
+                # First release (launch)
+                launch_entry = sorted_releases.iloc[0]
+                launch_sales = launch_entry['Global_Sales']
+                launch_year = launch_entry['Year']
+                
+                # Later releases (long-term)
+                later_releases = sorted_releases.iloc[1:]
+                long_term_sales = later_releases['Global_Sales'].sum()
+                
+                # Calculate metrics
+                total_sales = launch_sales + long_term_sales
+                if total_sales > 0:
+                    long_tail_ratio = long_term_sales / total_sales
+                else:
+                    long_tail_ratio = 0
+                
+                # Categorize performance pattern
+                if long_tail_ratio > 0.6:
+                    pattern = 'Long-term Success'
+                elif long_tail_ratio > 0.3:
+                    pattern = 'Balanced Performance'  
+                else:
+                    pattern = 'Front-loaded'
+                
+                game_analysis.append({
+                    'Name': game_name,
+                    'Launch_Sales': launch_sales,
+                    'Long_term_Sales': long_term_sales,
+                    'Total_Sales': total_sales,
+                    'Long_tail_Ratio': long_tail_ratio,
+                    'Pattern': pattern,
+                    'Launch_Year': launch_year,
+                    'Genre': launch_entry['Genre'],
+                    'Publisher': launch_entry['Publisher']
+                })
+        
+        if not game_analysis:
+            # Fallback: analyze single-release games by sales terciles
+            df_copy = self.df.copy()
+            sales_terciles = df_copy['Global_Sales'].quantile([0.33, 0.67])
+            
+            df_copy['Performance_Pattern'] = df_copy['Global_Sales'].apply(
+                lambda x: 'High Impact' if x > sales_terciles[0.67] else
+                         'Moderate Impact' if x > sales_terciles[0.33] else
+                         'Limited Impact'
+            )
+            
+            fig = px.scatter(
+                df_copy,
+                x='Year',
+                y='Global_Sales',
+                color='Performance_Pattern',
+                size='Global_Sales',
+                title='Sales Impact Analysis (Single Release Games)',
+                hover_data=['Name', 'Platform', 'Genre'],
+                color_discrete_map={
+                    'High Impact': '#2E8B57',
+                    'Moderate Impact': '#FFD700',
+                    'Limited Impact': '#FF6347'
+                }
+            )
+        else:
+            # Create DataFrame from analysis
+            analysis_df = pd.DataFrame(game_analysis)
+            
+            fig = px.scatter(
+                analysis_df,
+                x='Launch_Sales',
+                y='Long_term_Sales',
+                color='Pattern',
+                size='Total_Sales',
+                title='Launch vs Long-term Sales Performance',
+                hover_data=['Name', 'Genre', 'Long_tail_Ratio'],
+                color_discrete_map={
+                    'Front-loaded': '#FF6347',
+                    'Balanced Performance': '#FFD700',
+                    'Long-term Success': '#2E8B57'
+                }
+            )
+            
+            fig.update_layout(
+                xaxis_title='Launch Sales (Millions)',
+                yaxis_title='Long-term Sales (Millions)'
+            )
+        
+        fig.update_layout(height=500)
+        return fig
+    
+    def create_launch_vs_longterm_comparison(self):
+        """Create comparison of games with sustained vs front-loaded success patterns"""
+        # Find games with multiple releases to analyze launch vs long-term patterns
+        
+        pattern_analysis = []
+        for game_name, game_group in self.df.groupby('Name'):
+            if len(game_group) > 1:
+                sorted_releases = game_group.sort_values(['Year', 'Global_Sales'], ascending=[True, False])
+                
+                launch_sales = sorted_releases.iloc[0]['Global_Sales']
+                long_term_sales = sorted_releases.iloc[1:]['Global_Sales'].sum()
+                total_sales = launch_sales + long_term_sales
+                
+                if total_sales > 0:
+                    long_tail_ratio = long_term_sales / total_sales
+                    
+                    pattern_analysis.append({
+                        'Name': game_name,
+                        'Genre': sorted_releases.iloc[0]['Genre'],
+                        'Launch_Sales': launch_sales,
+                        'Long_term_Sales': long_term_sales,
+                        'Long_tail_Ratio': long_tail_ratio,
+                        'Total_Sales': total_sales
+                    })
+        
+        if pattern_analysis:
+            analysis_df = pd.DataFrame(pattern_analysis)
+            
+            # Analyze by genre
+            genre_patterns = analysis_df.groupby('Genre').agg({
+                'Long_tail_Ratio': 'mean',
+                'Total_Sales': ['mean', 'count']
+            }).round(3)
+            
+            genre_patterns.columns = ['Avg_Long_tail_Ratio', 'Avg_Total_Sales', 'Game_Count']
+            genre_patterns = genre_patterns.reset_index()
+            
+            fig = px.scatter(
+                genre_patterns,
+                x='Avg_Long_tail_Ratio',
+                y='Avg_Total_Sales',
+                size='Game_Count',
+                color='Genre',
+                title='Genre Analysis: Long-term vs Front-loaded Success Patterns',
+                hover_data=['Game_Count']
+            )
+            
+            fig.update_layout(
+                xaxis_title='Average Long-term Success Ratio',
+                yaxis_title='Average Total Sales (Millions)',
+                height=500
+            )
+            
+            # Add reference lines
+            fig.add_vline(x=0.3, line_dash="dash", line_color="gray", 
+                         annotation_text="Balanced threshold")
+            fig.add_vline(x=0.6, line_dash="dash", line_color="green", 
+                         annotation_text="Long-term focused")
+            
+        else:
+            # Fallback visualization for single-release games
+            genre_analysis = self.df.groupby('Genre').agg({
+                'Global_Sales': ['mean', 'std', 'count']
+            }).round(2)
+            
+            genre_analysis.columns = ['Avg_Sales', 'Sales_Variability', 'Game_Count']
+            genre_analysis = genre_analysis.reset_index()
+            
+            fig = px.scatter(
+                genre_analysis,
+                x='Sales_Variability',
+                y='Avg_Sales',
+                size='Game_Count',
+                color='Genre',
+                title='Genre Consistency vs Average Sales',
+                hover_data=['Game_Count']
+            )
+            
+            fig.update_layout(
+                xaxis_title='Sales Variability (Std Dev)',
+                yaxis_title='Average Sales (Millions)',
+                height=500
+            )
+        
+        return fig
+    
+    def create_peak_performance_timeline(self):
+        """Create timeline showing when different types of games peaked"""
+        # Analyze peak performance years by platform and genre
+        yearly_stats = self.df[self.df['Year'] >= 1980].groupby(['Year', 'Platform']).agg({
+            'Global_Sales': ['sum', 'mean', 'count']
+        }).round(2)
+        
+        yearly_stats.columns = ['Total_Sales', 'Avg_Sales', 'Game_Count']
+        yearly_stats = yearly_stats.reset_index()
+        
+        # Get top 10 platforms by total sales for cleaner visualization
+        top_platforms = self.df.groupby('Platform')['Global_Sales'].sum().nlargest(10).index
+        yearly_stats_filtered = yearly_stats[yearly_stats['Platform'].isin(top_platforms)]
+        
+        fig = px.line(
+            yearly_stats_filtered,
+            x='Year',
+            y='Total_Sales',
+            color='Platform',
+            title='Platform Peak Performance Timeline',
+            line_group='Platform'
+        )
+        
+        fig.update_layout(
+            xaxis_title='Year',
+            yaxis_title='Total Sales (Millions)',
+            height=500
+        )
+        
+        return fig
